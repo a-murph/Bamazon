@@ -22,11 +22,34 @@ inquirer.prompt([
 ]).then(function(answers) {
 	switch (answers.action) {
 		case "View Product Sales by Department":
-
+		conn
 			break;
 
 		case "Create New Department":
-			
+			inquirer.prompt([
+				{
+					name: "name",
+					message: "Enter the name of the new department."
+				},
+				{
+					name: "overhead",
+					message: "Enter the overhead costs of the new department."
+				}
+			]).then(function(answers) {
+				connection.connect(function(error) {
+					var query = connection.query(
+						"INSERT INTO departments SET ?",
+						{
+							name: answers.name,
+							overhead: answers.overhead
+						},
+						function(err, data) {
+							console.log("Department added!");
+							connection.end();
+						}
+					);
+				});
+			});
 			break;
 	}
 })
