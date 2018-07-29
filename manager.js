@@ -17,11 +17,25 @@ inquirer.prompt([
 		name: "action",
 		message: "Which action would you like to perform?",
 		type: "list",
-		options: ["View All Products", "View Low Inventory", "Add to Inventory", "Add New Product"]
+		choices: ["View All Products", "View Low Inventory", "Add to Inventory", "Add New Product"]
 	}
 ]).then(function(answers) {
 	switch (answers.action) {
 		case "View All Products":
+			connection.connect(function(error) {
+				if (error) throw error;
+
+				var query = connection.query(
+					"SELECT * FROM products",
+					function(err, data) {
+						for (var i = 0; i < data.length; i++) {
+							var item = data[i]; //convenience variable
+							console.log("ID: " +item.id +" NAME: " +item.name +" PRICE: $" +item.price +" STOCK: " +item.stock);
+						}
+						connection.end();
+					}
+				)
+			});
 			break;
 
 		case "View Low Inventory":
