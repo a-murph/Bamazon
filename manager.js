@@ -66,21 +66,25 @@ inquirer.prompt([
 					message: "Enter the number you would like to add to the stock."
 				}
 			]).then(function(answers) {
-				query = connection.query(
-					"UPDATE products SET ? + stock WHERE ?",
-					[
-						{
-							stock: answers.numberAdded
-						},
-						{
-							id: answers.itemId
+				connection.connect(function(error) {
+					if (error) throw error;
+
+					query = connection.query(
+						"UPDATE products SET ? + stock WHERE ?",
+						[
+							{
+								stock: answers.numberAdded
+							},
+							{
+								id: answers.itemId
+							}
+						],
+						function(err, data) {
+							console.log("Stock updated!");
+							connection.end();
 						}
-					],
-					function(err, data) {
-						console.log("Stock updated!");
-						connection.end();
-					}
-				);
+					);
+				});
 			});
 			break;
 
@@ -103,20 +107,24 @@ inquirer.prompt([
 					message: "Enter the number of this item to be stocked."
 				}
 			]).then(function(answers) {
-				query = connection.query(
-					"INSERT INTO products SET ?",
-					{
-						name: answers.name,
-						department: answers.department,
-						price: answers.price,
-						stock: answers.stock,
-						sales: 0
-					},
-					function(err, data) {
-						console.log("Item added!");
-						connection.end();
-					}
-				)
+				connection.connect(function(error) {
+					if (error) throw error;
+
+					query = connection.query(
+						"INSERT INTO products SET ?",
+						{
+							name: answers.name,
+							department: answers.department,
+							price: answers.price,
+							stock: answers.stock,
+							sales: 0
+						},
+						function(err, data) {
+							console.log("Item added!");
+							connection.end();
+						}
+					);
+				});
 			});
 			break;
 	}
