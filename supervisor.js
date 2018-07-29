@@ -22,7 +22,19 @@ inquirer.prompt([
 ]).then(function(answers) {
 	switch (answers.action) {
 		case "View Product Sales by Department":
-		conn
+			connection.connect(function(error) {
+				if (error) throw error;
+
+				var query = connection.query(
+					"SELECT departments.id, departments.name, departments.overhead, SUM(products.sales) AS sales, SUM(products.sales)-departments.overhead AS profit FROM departments INNER JOIN products ON products.department = departments.name GROUP BY department ORDER BY id",
+					function(err, data) {
+						for (var i = 0; i < data.length; i++) {
+							console.log("ID: " +data[i].id +" DEPARTMENT: " +data[i].name +" OVERHEAD: $" +data[i].overhead +" SALES: $" +data[i].sales +" PROFIT: $" +data[i].profit);
+						}
+						connection.end();
+					}
+				);
+			});
 			break;
 
 		case "Create New Department":
@@ -37,6 +49,8 @@ inquirer.prompt([
 				}
 			]).then(function(answers) {
 				connection.connect(function(error) {
+					if (error) throw error;
+
 					var query = connection.query(
 						"INSERT INTO departments SET ?",
 						{
