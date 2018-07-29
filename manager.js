@@ -78,13 +78,47 @@ inquirer.prompt([
 					],
 					function(err, data) {
 						console.log("Stock updated!");
+						connection.end();
 					}
 				);
-				console.log(query.sql);
 			});
 			break;
 
 		case "Add New Product":
+			inquirer.prompt([
+				{
+					name: "name",
+					message: "Enter the name of the new product."
+				},
+				{
+					name: "department",
+					message: "Enter the name of the department this product belongs to."
+				},
+				{
+					name: "price",
+					message: "Enter the price of the item."
+				},
+				{
+					name: "stock",
+					message: "Enter the number of this item to be stocked."
+				}
+			]).then(function(answers) {
+				query = connection.query(
+					"INSERT INTO products SET ?",
+					{
+						name: answers.name,
+						department: answers.department,
+						price: answers.price,
+						stock: answers.stock,
+						sales: 0
+					},
+					function(err, data) {
+						console.log("Item added!");
+						connection.end();
+					}
+				)
+				console.log(query.sql);
+			});
 			break;
 	}
 });
