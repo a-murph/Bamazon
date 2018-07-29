@@ -37,8 +37,22 @@ inquirer.prompt([
 				)
 			});
 			break;
-
+			
 		case "View Low Inventory":
+			connection.connect(function(error) {
+				if (error) throw error;
+	
+				var query = connection.query(
+					"SELECT * FROM products WHERE stock < 5",
+					function(err, data) {
+						for (var i = 0; i < data.length; i++) {
+							var item = data[i]; //convenience variable
+							console.log("ID: " +item.id +" NAME: " +item.name +" STOCK: " +item.stock);
+						}
+						connection.end();
+					}
+				)
+			});
 			break;
 
 		case "Add to Inventory":
