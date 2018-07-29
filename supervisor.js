@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var cTable = require("console.table");
 
 //read database password from .env
 require("dotenv").config();
@@ -26,11 +27,30 @@ inquirer.prompt([
 				if (error) throw error;
 
 				var query = connection.query(
+					//SELECT STATEMENT
+					//Selects id, name, and overhead from departments tabel
+					//Selects sales from products table
+					//Finds sum of sales in each dept and aliases as "sales"
+					//Finds sales - overhead per dept and aliases as "profit"
+					//Orders results by department ID
 					"SELECT departments.id, departments.name, departments.overhead, SUM(products.sales) AS sales, SUM(products.sales)-departments.overhead AS profit FROM departments INNER JOIN products ON products.department = departments.name GROUP BY department ORDER BY id",
 					function(err, data) {
+						//Array to hold table of result objects
+						var table = [];
 						for (var i = 0; i < data.length; i++) {
-							console.log("ID: " +data[i].id +" DEPARTMENT: " +data[i].name +" OVERHEAD: $" +data[i].overhead +" SALES: $" +data[i].sales +" PROFIT: $" +data[i].profit);
+							//build each result into an object
+							var newRow = {
+								id: data[i].id,
+								department: data[i].name,
+								overhead: "$" +data[i].overhead,
+								sales: "$" +data[i].sales,
+								profit: "$" +data[i].profit
+							};
+							//push new object into table
+							table.push(newRow);
 						}
+						//log result table
+						console.table(table);
 						connection.end();
 					}
 				);
