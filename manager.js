@@ -56,6 +56,32 @@ inquirer.prompt([
 			break;
 
 		case "Add to Inventory":
+			inquirer.prompt([
+				{
+					name: "itemId",
+					message: "Enter the ID of the product you would like to restock."
+				},
+				{
+					name: "numberAdded",
+					message: "Enter the number you would like to add to the stock."
+				}
+			]).then(function(answers) {
+				query = connection.query(
+					"UPDATE products SET ? + stock WHERE ?",
+					[
+						{
+							stock: answers.numberAdded
+						},
+						{
+							id: answers.itemId
+						}
+					],
+					function(err, data) {
+						console.log("Stock updated!");
+					}
+				);
+				console.log(query.sql);
+			});
 			break;
 
 		case "Add New Product":
