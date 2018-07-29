@@ -117,7 +117,6 @@ inquirer.prompt([
 						connection.end();
 					}
 				)
-				console.log(query.sql);
 			});
 			break;
 	}
